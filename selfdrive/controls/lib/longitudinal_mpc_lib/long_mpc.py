@@ -64,11 +64,11 @@ CRUISE_MAX_ACCEL = 1.6
 
 def get_jerk_factor(personality=log.LongitudinalPersonality.standard):
   if personality==log.LongitudinalPersonality.relaxed:
-    return 1.5
+    return 1.0
   elif personality==log.LongitudinalPersonality.standard:
     return 1.0
   elif personality==log.LongitudinalPersonality.aggressive:
-    return 0.45
+    return 0.7
   else:
     raise NotImplementedError("Longitudinal personality not supported")
 
@@ -87,14 +87,14 @@ def get_T_FOLLOW(personality=log.LongitudinalPersonality.standard):
 def get_dynamic_follow(v_ego, personality=log.LongitudinalPersonality.standard):
   # The Dynamic follow function is adjusted by Marc(cgw1968-5779)
   if personality==log.LongitudinalPersonality.relaxed:
-    x_vel =  [0.,  6,   10., 10.01, 15., 27.7]
+    x_vel =  [0.,  6,   10., 10.01, 19.4, 27.7]
     y_dist = [1.7, 1.7, 1.9,  2.0,  2.1,  2.2]
   elif personality==log.LongitudinalPersonality.standard:
-    x_vel =  [0.,  6,   10., 10.01, 15., 27.7]
-    y_dist = [1.3, 1.4, 1.4,  1.45, 1.45, 1.5]
+    x_vel =  [0.,  6,   10., 10.01, 19.4, 27.7]
+    y_dist = [1.3, 1.4, 1.4,  1.45, 1.65, 1.95]
   elif personality==log.LongitudinalPersonality.aggressive:
-    x_vel =  [0.,  6,   10., 10.01, 15., 27.7]
-    y_dist = [1.0, 1.2, 1.1, 1.15, 1.15,  1.2]
+    x_vel =  [0.,  6,   10., 19.4, 27.7]
+    y_dist = [1.05, 1.15, 1.2, 1.3, 1.7]
   else:
     raise NotImplementedError("Dynamic Follow personality not supported")
   return np.interp(v_ego, x_vel, y_dist)
@@ -120,7 +120,7 @@ def get_stopped_equivalence_factor(v_lead, v_ego):
   speed_to_reach_max_v_diff_offset = speed_to_reach_max_v_diff_offset * CV.KPH_TO_MS
   delta_speed = v_lead - v_ego
   if np.all(delta_speed > 0.3):
-    v_diff_offset = delta_speed * 2
+    v_diff_offset = delta_speed * 1.7
     v_diff_offset = np.clip(v_diff_offset, 0, v_diff_offset_max)
     v_diff_offset = np.maximum(v_diff_offset * ((speed_to_reach_max_v_diff_offset - v_ego)/speed_to_reach_max_v_diff_offset), 0)
   return (v_lead**2) / (2 * COMFORT_BRAKE) + v_diff_offset
