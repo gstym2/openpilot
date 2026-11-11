@@ -68,7 +68,7 @@ def get_jerk_factor(personality=log.LongitudinalPersonality.standard):
   elif personality==log.LongitudinalPersonality.standard:
     return 1.0
   elif personality==log.LongitudinalPersonality.aggressive:
-    return 0.7
+    return 0.6
   else:
     raise NotImplementedError("Longitudinal personality not supported")
 
@@ -94,7 +94,7 @@ def get_dynamic_follow(v_ego, personality=log.LongitudinalPersonality.standard):
     y_dist = [1.3, 1.4, 1.4,  1.45, 1.65, 2.0]
   elif personality==log.LongitudinalPersonality.aggressive:
     x_vel =  [0.,  6,   10., 19.4, 27.7]
-    y_dist = [1.05, 1.1, 1.15, 1.25, 1.75]
+    y_dist = [1.05, 1.1, 1.15, 1.25, 1.70]
   else:
     raise NotImplementedError("Dynamic Follow personality not supported")
   return np.interp(v_ego, x_vel, y_dist)
@@ -115,12 +115,12 @@ def get_stopped_equivalence_factor(v_lead, v_ego):
   # KRKeegan this offset rapidly decreases the following distance when the lead pulls
   # away, resulting in an early demand for acceleration.
   v_diff_offset = 0
-  v_diff_offset_max = 4
-  speed_to_reach_max_v_diff_offset = 10 # in kp/h
+  v_diff_offset_max = 5
+  speed_to_reach_max_v_diff_offset = 20 # in kp/h
   speed_to_reach_max_v_diff_offset = speed_to_reach_max_v_diff_offset * CV.KPH_TO_MS
   delta_speed = v_lead - v_ego
   if np.all(delta_speed > 0.6):
-    v_diff_offset = delta_speed * 1.0
+    v_diff_offset = delta_speed * 1.2
     v_diff_offset = np.clip(v_diff_offset, 0, v_diff_offset_max)
     v_diff_offset = np.maximum(v_diff_offset * ((speed_to_reach_max_v_diff_offset - v_ego)/speed_to_reach_max_v_diff_offset), 0)
   return (v_lead**2) / (2 * COMFORT_BRAKE) + v_diff_offset
