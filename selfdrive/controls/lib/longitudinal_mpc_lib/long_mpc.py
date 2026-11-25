@@ -57,7 +57,7 @@ T_IDXS_LST = [index_function(idx, max_val=MAX_T, max_idx=N) for idx in range(N+1
 T_IDXS = np.array(T_IDXS_LST)
 FCW_IDXS = T_IDXS < 5.0
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
-COMFORT_BRAKE = 1.9
+COMFORT_BRAKE = 2.0
 # STOP_DISTANCE = 6.0
 CRUISE_MIN_ACCEL = -1.2
 CRUISE_MAX_ACCEL = 1.6
@@ -334,8 +334,8 @@ class LongitudinalMpc:
     j_ego_v_ego = 1
     a_change_v_ego = 1
     if (v_lead0 - v_ego >= 0) and (v_lead1 - v_ego >= 0):
-      j_ego_v_ego = np.interp(v_ego, v_ego_bps, [.75, 1.])
-      a_change_v_ego = np.interp(v_ego, v_ego_bps, [.75, 1.])
+      j_ego_v_ego = np.interp(v_ego, v_ego_bps, [.8, 1.])
+      a_change_v_ego = np.interp(v_ego, v_ego_bps, [.8, 1.])
     if self.mode == 'acc':
       a_change_cost = A_CHANGE_COST if prev_accel_constraint else 0
       cost_weights = [X_EGO_OBSTACLE_COST, X_EGO_COST, V_EGO_COST, A_EGO_COST, jerk_factor * a_change_cost * a_change_v_ego, jerk_factor * J_EGO_COST * j_ego_v_ego]
